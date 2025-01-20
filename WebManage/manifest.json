@@ -1,0 +1,50 @@
+{
+    "format_version": 2,
+    "header": {
+      "name": "Web Manage",
+      "description": "[ Made By Elemen ]",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "uuid": "00ce2f3c-e504-48e4-903b-f4a84479de46",
+      "min_engine_version": [
+        1,
+        21,
+        1
+      ]
+    },
+    "modules": [
+      {
+        "type": "data",
+        "uuid": "ec830a54-ae20-4c62-965b-ac20349a9667",
+        "version": [
+          1,
+          0,
+          0
+        ]
+      },
+      {
+        "type": "script",
+        "language": "javascript",
+        "uuid": "f3a25e24-f269-416b-9156-dc778dde63df",
+        "entry": "src/index.js",
+        "version": [
+          1,
+          0,
+          0
+        ]
+      }
+    ],
+    "dependencies": [
+      {
+        "module_name": "@minecraft/server",
+        "version": "2.0.0-alpha"
+      },
+      {
+        "module_name": "@minecraft/server-ui",
+        "version": "2.0.0-alpha"
+      }
+    ]
+  }

@@ -1,0 +1,24 @@
+{
+  "name": "bedrock-web-manage",
+  "version": "1.0.0",
+  "description": "made by elemen",
+  "main": "Web/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Minecraft-Memoria-ProJect/Bedrock-Web-Manage.git"
+  },
+  "author": "elemen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Minecraft-Memoria-ProJect/Bedrock-Web-Manage/issues"
+  },
+  "homepage": "https://github.com/Minecraft-Memoria-ProJect/Bedrock-Web-Manage#readme",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2",
+    "path": "^0.12.7"
+  }
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Logs</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #2e2e2e;
+            color: #dcdcdc;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #1a1a1a;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            color: #39b54a;
+            font-size: 2em;
+            margin: 0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .log-container {
+            margin: 20px auto 0;
+            background-color: #1a1a1a;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            width: 95%; /* 반응형 가로 크기 */
+            max-width: 700px; /* 최대 가로 크기 */
+            height: 60vh; /* 화면 높이에 따라 유동적으로 조정 */
+            overflow-y: auto; /* 사각형 내부 스크롤 활성화 */
+            display: flex;
+            flex-direction: column-reverse; /* 아래에서 위로 쌓이도록 설정 */
+        }
+
+        .log-container p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            line-height: 1.4;
+            color: #bfbfbf;
+        }
+
+        .log-info {
+            color: #39b54a;
+        }
+
+        .log-warning {
+            color: #f0ad4e;
+        }
+
+        .log-error {
+            color: #d9534f;
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .button {
+            background-color: #39b54a;
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #2c8b36;
+        }
+
+        footer {
+            background-color: #1a1a1a;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer p {
+            margin: 0;
+            color: #dcdcdc;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5em;
+            }
+
+            .log-container {
+                width: 95%;
+                height: 65vh; /* 작은 화면에서는 높이 더 확보 */
+            }
+
+            .button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Server Logs</h1>
+    </header>
+    <main>
+        <p>Below are the latest logs from the server:</p>
+        <div class="log-container" id="logContainer">
+            <!-- Logs will be dynamically inserted here -->
+        </div>
+        <div class="button-container">
+            <button class="button" id="homeButton">Home</button>
+            <button class="button" id="pauseButton">Pause Logs</button>
+            <button class="button" id="clearButton">Clear Logs</button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Minecraft Server Management</p>
+    </footer>
+    <script>
+        let isPaused = false; // 상태 플래그
+        let fetchInterval; // fetch 주기
+
+        async function fetchServerLogs() {
+            if (isPaused) return; // 일시정지 중일 때 데이터 가져오지 않음
+
+            try {
+                const response = await fetch('/logs'); // 서버에서 로그 데이터를 가져오는 API
+                if (!response.ok) {
+                    throw new Error("Failed to fetch server logs");
+                }
+
+                const logs = await response.json();
+                const logContainer = document.getElementById('logContainer');
+
+                // 기존 내용을 초기화
+                logContainer.innerHTML = '';
+
+                // 로그 데이터를 아래에서 위로 쌓이도록 추가
+                logs.forEach(log => {
+                    const logEntry = document.createElement('p');
+
+                    // 로그 중요도에 따른 색상 지정
+                    if (log.includes("[INFO]")) {
+                        logEntry.className = "log-info";
+                    } else if (log.includes("[WARNING]")) {
+                        logEntry.className = "log-warning";
+                    } else if (log.includes("[ERROR]")) {
+                        logEntry.className = "log-error";
+                    }
+
+                    logEntry.textContent = log;
+                    logContainer.appendChild(logEntry);
+                });
+            } catch (error) {
+                console.error("Error fetching server logs:", error);
+                document.getElementById('logContainer').innerHTML = `<p class="log-error">Unable to load logs. Please try again later.</p>`;
+            }
+        }
+
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = '/'; // 홈으로 이동
+        });
+
+        document.getElementById('pauseButton').addEventListener('click', (e) => {
+            isPaused = !isPaused; // 상태 토글
+            e.target.textContent = isPaused ? 'Resume Logs' : 'Pause Logs'; // 버튼 텍스트 변경
+        });
+
+        document.getElementById('clearButton').addEventListener('click', () => {
+            document.getElementById('logContainer').innerHTML = ''; // 로그 내용 초기화
+        });
+
+        // 5초마다 로그 갱신
+        fetchInterval = setInterval(fetchServerLogs, 5000);
+
+        // 페이지 로드 시 첫 로그 가져오기
+        fetchServerLogs();
+    </script>
+</body>
+
+</html>
